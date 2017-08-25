@@ -5,7 +5,7 @@ namespace EncryptionTest
 {
     public class EncryptionConfigLoad
     {
-public EncryptionConfig LoadEncryptionFromJson(string filename, string section)
+public EncryptionConfig LoadEncryptionConfigFromJson(string filename, string section)
 {
     var builder=new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())

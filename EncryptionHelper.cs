@@ -8,24 +8,25 @@ namespace EncryptionTest
 {
     public class EncryptionHelper
     {
-        public  string secretKey=String.Empty;
-        public  string saltValue=String.Empty;
-        public  string passwordIterations=String.Empty;
-        public  string initVector=String.Empty;
+        // public  string secretKey=String.Empty;
+        // public  string saltValue=String.Empty;
+        // public  string passwordIterations=String.Empty;
+        // public  string initVector=String.Empty;
+        private EncryptionConfig config=null;
         public  EncryptionHelper(string jsonFile="encryptConfig.json", string section="EncryptionConfig")
         {
-            EncryptionConfig config=new EncryptionConfigLoad().LoadEncryptionConfigFromJson(jsonFile, section);
-            secretKey=config.key;
-            saltValue=config.saltValue;
-            passwordIterations=config.passwordIterations;
-            initVector=config.initVector;
+            config=new EncryptionConfigLoad().LoadEncryptionConfigFromJson(jsonFile, section);
+            // secretKey=config.key;
+            // saltValue=config.saltValue;
+            // passwordIterations=config.passwordIterations;
+            // initVector=config.initVector;
 
         }
          
         public  string EncryptString(string plainText)
         {
-            var Key = Encoding.ASCII.GetBytes(secretKey);
-            var IV = Encoding.ASCII.GetBytes(initVector);
+            var Key = Encoding.ASCII.GetBytes(config.key);
+            var IV = Encoding.ASCII.GetBytes(config.initVector);
             // Check arguments.
             if (plainText == null || plainText.Length <= 0)
                 throw new ArgumentNullException("plainText");
@@ -61,8 +62,8 @@ namespace EncryptionTest
         }
         public  string DecryptString(string encrypted)
         {
-            var Key = Encoding.ASCII.GetBytes(secretKey);
-            var IV = Encoding.ASCII.GetBytes(initVector);
+            var Key = Encoding.ASCII.GetBytes(config.key);
+            var IV = Encoding.ASCII.GetBytes(config.initVector);
             var cipherText = Convert.FromBase64String(encrypted);
             // Check arguments.
             if (cipherText == null || cipherText.Length <= 0)
@@ -102,8 +103,8 @@ namespace EncryptionTest
         public  string HashString(string password)
         {
           
-            var saltConverted = Encoding.UTF8.GetBytes(saltValue);
-            var iterations = Convert.ToInt32(passwordIterations);
+            var saltConverted = Encoding.UTF8.GetBytes(config.saltValue);
+            var iterations = Convert.ToInt32(config.passwordIterations);
             // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
