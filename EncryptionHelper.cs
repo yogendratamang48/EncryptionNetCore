@@ -14,44 +14,14 @@ namespace EncryptionTest
         public  string initVector=String.Empty;
         public  EncryptionHelper(string jsonFile="encryptConfig.json", string section="EncryptionConfig")
         {
-            EncryptionConfig config=new EncryptionConfigLoad().LoadEncryptionFromJson(jsonFile, section);
+            EncryptionConfig config=new EncryptionConfigLoad().LoadEncryptionConfigFromJson(jsonFile, section);
             secretKey=config.key;
             saltValue=config.saltValue;
             passwordIterations=config.passwordIterations;
             initVector=config.initVector;
 
         }
-         public  string Encryptdata(string password)
-        {
-            string strmsg = string.Empty;
-            byte[] encode = new byte[password.Length];
-            encode = Encoding.UTF8.GetBytes(password);
-            strmsg = Convert.ToBase64String(encode);
-            return strmsg;
-        }
-        public  string Decryptdata(string encryptpwd)
-        {
-            try
-            {
-                string decryptpwd = string.Empty;
-                UTF8Encoding encodepwd = new UTF8Encoding();
-                Decoder Decode = encodepwd.GetDecoder();
-                byte[] todecode_byte = Convert.FromBase64String(encryptpwd);
-                int charCount = Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-                char[] decoded_char = new char[charCount];
-                Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-                decryptpwd = new String(decoded_char);
-                return decryptpwd;
-            }
-            catch 
-            {
-
-                return null;
-            }
-          
-        }
-
-
+         
         public  string EncryptString(string plainText)
         {
             var Key = Encoding.ASCII.GetBytes(secretKey);
@@ -129,7 +99,7 @@ namespace EncryptionTest
             return plaintext;
         }
 
-        public  string HashedString(string password)
+        public  string HashString(string password)
         {
           
             var saltConverted = Encoding.UTF8.GetBytes(saltValue);
