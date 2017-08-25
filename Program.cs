@@ -11,9 +11,7 @@ namespace EncryptionTest
     {
         static void Main(string[] args)
         {
-            // var config=new EncryptionHelper();
-            // Console.WriteLine($"Key:{config.secretKey}");
-            // Console.WriteLine($"IV:{config.initVector}");
+            
             MainEncryptionTest();
          
         }
