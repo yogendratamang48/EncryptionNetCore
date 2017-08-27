@@ -8,19 +8,11 @@ namespace EncryptionTest
 {
     public class EncryptionHelper
     {
-        // public  string secretKey=String.Empty;
-        // public  string saltValue=String.Empty;
-        // public  string passwordIterations=String.Empty;
-        // public  string initVector=String.Empty;
         private EncryptionConfig config=null;
         public  EncryptionHelper(string jsonFile="encryptConfig.json", string section="EncryptionConfig")
         {
             config=new EncryptionConfigLoad().LoadEncryptionConfigFromJson(jsonFile, section);
-            // secretKey=config.key;
-            // saltValue=config.saltValue;
-            // passwordIterations=config.passwordIterations;
-            // initVector=config.initVector;
-
+       
         }
          
         public  string EncryptString(string plainText)
@@ -35,29 +27,28 @@ namespace EncryptionTest
             if (IV == null || IV.Length <= 0)
                 throw new ArgumentNullException("IV");
             byte[] encrypted;
-            // Create an Aes object
-            // with the specified key and IV.
+
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
-                // Create a decrytor to perform the stream transform.
+
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-                // Create the streams used for encryption.
+
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
                     using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
                         using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                         {
-                            //Write all data to the stream.
+
                             swEncrypt.Write(plainText);
                         }
                         encrypted = msEncrypt.ToArray();
                     }
                 }
             }
-            // Return the encrypted bytes from the memory stream.
+
             return Convert.ToBase64String(encrypted);
         }
         public  string DecryptString(string encrypted)
@@ -65,33 +56,29 @@ namespace EncryptionTest
             var Key = Encoding.ASCII.GetBytes(config.key);
             var IV = Encoding.ASCII.GetBytes(config.initVector);
             var cipherText = Convert.FromBase64String(encrypted);
-            // Check arguments.
+
             if (cipherText == null || cipherText.Length <= 0)
                 throw new ArgumentNullException("cipherText");
             if (Key == null || Key.Length <= 0)
                 throw new ArgumentNullException("Key");
             if (IV == null || IV.Length <= 0)
                 throw new ArgumentNullException("IV");
-            // Declare the string used to hold
-            // the decrypted text.
+
             string plaintext = null;
-            // Create an Aes object
-            // with the specified key and IV.
+
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
-                // Create a decrytor to perform the stream transform.
+
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                // Create the streams used for decryption.
+
                 using (MemoryStream msDecrypt = new MemoryStream(cipherText))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
                         using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                         {
-                            // Read the decrypted bytes from the decrypting stream
-                            // and place them in a string.
                             plaintext = srDecrypt.ReadToEnd();
                         }
                     }
@@ -105,7 +92,7 @@ namespace EncryptionTest
           
             var saltConverted = Encoding.UTF8.GetBytes(config.saltValue);
             var iterations = Convert.ToInt32(config.passwordIterations);
-            // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
+          
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
                 salt: saltConverted,
